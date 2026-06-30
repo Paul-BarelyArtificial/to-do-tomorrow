@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Barely Artificial • To Do Tomorrow</title>
+
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="app-header">
+      <p class="brand">Barely Artificial</p>
+      <h1>To Do Tomorrow</h1>
+      <p class="tagline">One thing at a time.</p>
+    </header>
+
+    <section class="task-entry" aria-label="Add a task">
+      <label for="task-title">What needs doing tomorrow?</label>
+      <input
+        id="task-title"
+        type="text"
+        maxlength="100"
+        placeholder="Add a task..."
+        autocomplete="off"
+      />
+
+      <button id="toggle-notes" class="text-button" type="button">
+        + Notes
+      </button>
+
+      <textarea
+        id="task-notes"
+        class="hidden"
+        rows="3"
+        placeholder="Optional notes..."
+      ></textarea>
+
+      <div class="entry-footer">
+        <span id="char-count">0 / 100</span>
+        <button id="add-task" type="button">Add</button>
+      </div>
+    </section>
+
+    <section class="task-list-section" aria-label="Task list">
+      <ul id="task-list" class="task-list"></ul>
+
+      <div id="empty-state" class="empty-state">
+        <h2>You're all caught up.</h2>
+        <p>Enjoy the rest of your day.</p>
+      </div>
+    </section>
+
+    <footer class="app-footer">
+      <span id="sync-status">Local prototype</span>
+    </footer>
+  </main>
+
+  <div id="toast" class="toast hidden">
+    Task cleared <button id="undo-clear" type="button">Undo</button>
+  </div>
+
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

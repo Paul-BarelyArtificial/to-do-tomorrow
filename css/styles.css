@@ -1,0 +1,270 @@
+:root {
+  --bg: #101113;
+  --panel: #17191d;
+  --panel-soft: #1f2228;
+  --text: #f4f1ea;
+  --muted: #aaa39a;
+  --accent: #d7ff64;
+  --accent-soft: rgba(215, 255, 100, 0.12);
+  --border: rgba(244, 241, 234, 0.12);
+  --danger: #ff7a7a;
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at top, rgba(215, 255, 100, 0.08), transparent 32rem),
+    var(--bg);
+  color: var(--text);
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app-shell {
+  width: min(92vw, 680px);
+  margin: 0 auto;
+  padding: 48px 0 80px;
+}
+
+.app-header {
+  margin-bottom: 32px;
+}
+
+.brand {
+  margin: 0 0 18px;
+  color: var(--accent);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2.4rem, 8vw, 4.8rem);
+  line-height: 0.95;
+  letter-spacing: -0.08em;
+}
+
+.tagline {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+.task-entry {
+  padding: 22px;
+  margin-bottom: 28px;
+  background: rgba(23, 25, 29, 0.84);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(16px);
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+input,
+textarea {
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: 18px;
+  background: var(--panel-soft);
+  color: var(--text);
+  outline: none;
+}
+
+input {
+  padding: 16px 18px;
+  font-size: 1.1rem;
+}
+
+textarea {
+  margin-top: 14px;
+  padding: 14px 16px;
+  resize: vertical;
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.text-button {
+  margin-top: 12px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.entry-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+#char-count {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+#add-task {
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 22px;
+  background: var(--accent);
+  color: #111;
+  font-weight: 800;
+}
+
+.task-list {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.task-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 14px;
+  align-items: start;
+  padding: 18px;
+  background: rgba(23, 25, 29, 0.92);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+  transition: transform 180ms ease, opacity 180ms ease, border-color 180ms ease;
+}
+
+.task-card.clearing {
+  transform: translateX(18px);
+  opacity: 0;
+}
+
+.drag-handle {
+  padding-top: 2px;
+  color: var(--muted);
+  cursor: grab;
+  user-select: none;
+}
+
+.task-content h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+}
+
+.task-content p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.clear-button {
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--accent);
+  font-weight: 900;
+}
+
+.clear-button:hover {
+  background: var(--accent-soft);
+}
+
+.empty-state {
+  padding: 42px 20px;
+  text-align: center;
+  color: var(--muted);
+  border: 1px dashed var(--border);
+  border-radius: 28px;
+}
+
+.empty-state h2 {
+  margin: 0 0 8px;
+  color: var(--text);
+  font-size: 1.2rem;
+}
+
+.empty-state p {
+  margin: 0;
+}
+
+.app-footer {
+  margin-top: 28px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 12px 16px;
+  background: #f4f1ea;
+  color: #111;
+  border-radius: 999px;
+  box-shadow: var(--shadow);
+}
+
+.toast button {
+  border: 0;
+  background: transparent;
+  color: #111;
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 520px) {
+  .app-shell {
+    padding-top: 32px;
+  }
+
+  .task-entry {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .task-card {
+    grid-template-columns: auto 1fr auto;
+    padding: 16px;
+  }
+}
