@@ -158,7 +158,7 @@ function getDragAfterElement(container, y) {
   const draggableElements = [
     ...container.querySelectorAll(".task-card:not(.dragging)")
   ];
-
+ 
   return draggableElements.reduce(
     (closest, child) => {
       const box = child.getBoundingClientRect();
