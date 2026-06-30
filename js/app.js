@@ -11,6 +11,7 @@ const undoButton = document.querySelector("#undo-clear");
 let tasks = [];
 let lastClearedTask = null;
 let undoTimer = null;
+let draggedTaskId = null;
 
 function saveTasks() {
   localStorage.setItem("toDoTomorrowTasks", JSON.stringify(tasks));
@@ -23,7 +24,6 @@ function loadTasks() {
 
 function renderTasks() {
   taskList.innerHTML = "";
-
   emptyState.classList.toggle("hidden", tasks.length > 0);
 
   tasks.forEach((task) => {
@@ -51,14 +51,13 @@ function addTask() {
 
   if (!title) return;
 
-  const task = {
+  tasks.push({
     id: crypto.randomUUID(),
     title,
     notes,
     createdAt: Date.now()
-  };
+  });
 
-  tasks.push(task);
   saveTasks();
   renderTasks();
 
@@ -72,7 +71,7 @@ function clearTask(id) {
   const item = taskList.querySelector(`[data-id="${id}"]`);
   const index = tasks.findIndex((task) => task.id === id);
 
-  if (index === -1) return;
+  if (index === -1 || !item) return;
 
   item.classList.add("clearing");
 
@@ -127,6 +126,69 @@ function toggleNotes() {
   }
 }
 
+function handleDragStart(event) {
+  const item = event.target.closest(".task-card");
+  draggedTaskId = item.dataset.id;
+  item.classList.add("dragging");
+}
+
+function handleDragEnd(event) {
+  const item = event.target.closest(".task-card");
+  item.classList.remove("dragging");
+  draggedTaskId = null;
+  saveTaskOrderFromDom();
+}
+
+function handleDragOver(event) {
+  event.preventDefault();
+
+  const afterElement = getDragAfterElement(taskList, event.clientY);
+  const draggingItem = document.querySelector(".dragging");
+
+  if (!draggingItem) return;
+
+  if (afterElement == null) {
+    taskList.appendChild(draggingItem);
+  } else {
+    taskList.insertBefore(draggingItem, afterElement);
+  }
+}
+
+function getDragAfterElement(container, y) {
+  const draggableElements = [
+    ...container.querySelectorAll(".task-card:not(.dragging)")
+  ];
+
+  return draggableElements.reduce(
+    (closest, child) => {
+      const box = child.getBoundingClientRect();
+      const offset = y - box.top - box.height / 2;
+
+      if (offset < 0 && offset > closest.offset) {
+        return {
+          offset,
+          element: child
+        };
+      }
+
+      return closest;
+    },
+    {
+      offset: Number.NEGATIVE_INFINITY,
+      element: null
+    }
+  ).element;
+}
+
+function saveTaskOrderFromDom() {
+  const orderedIds = [...taskList.querySelectorAll(".task-card")].map(
+    (item) => item.dataset.id
+  );
+
+  tasks = orderedIds.map((id) => tasks.find((task) => task.id === id));
+  saveTasks();
+}
+
 function escapeHtml(text) {
   const div = document.createElement("div");
   div.textContent = text;
@@ -134,7 +196,6 @@ function escapeHtml(text) {
 }
 
 addTaskButton.addEventListener("click", addTask);
-
 taskTitleInput.addEventListener("input", updateCharacterCount);
 
 taskTitleInput.addEventListener("keydown", (event) => {
@@ -145,7 +206,6 @@ taskTitleInput.addEventListener("keydown", (event) => {
 });
 
 toggleNotesButton.addEventListener("click", toggleNotes);
-
 undoButton.addEventListener("click", undoClear);
 
 taskList.addEventListener("click", (event) => {
@@ -155,6 +215,10 @@ taskList.addEventListener("click", (event) => {
   const item = clearButton.closest(".task-card");
   clearTask(item.dataset.id);
 });
+
+taskList.addEventListener("dragstart", handleDragStart);
+taskList.addEventListener("dragend", handleDragEnd);
+taskList.addEventListener("dragover", handleDragOver);
 
 loadTasks();
 renderTasks();

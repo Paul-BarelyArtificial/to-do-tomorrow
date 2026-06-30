@@ -1,2 +1,4 @@
+#mac settings
 .DS_Store
+#personal VS code settings
 .vscode/settings.json
