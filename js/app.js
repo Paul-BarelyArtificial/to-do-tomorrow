@@ -71,10 +71,13 @@ async function addTask() {
     return;
   }
 
-  await saveCloudTask(currentUser.uid, {
-    title,
-    notes
-  });
+ await saveCloudTask(currentUser.uid, {
+  title,
+  notes
+});
+
+tasks = await loadCloudTasks(currentUser.uid);
+renderTasks();
 
   taskTitleInput.value = "";
   taskNotesInput.value = "";
@@ -252,15 +255,20 @@ signOutButton.addEventListener("click", async () => {
   await signOutUser();
 });
 
-watchAuth((user) => {
+watchAuth(async (user) => {
   if (user) {
     currentUser = user;
 
     authStatus.textContent = `Hi ${user.displayName}`;
     signInButton.classList.add("hidden");
     signOutButton.classList.remove("hidden");
+
+    tasks = await loadCloudTasks(currentUser.uid);
+    renderTasks();
   } else {
     currentUser = null;
+    tasks = [];
+    renderTasks();
 
     authStatus.textContent = "Not signed in";
     signInButton.classList.remove("hidden");
