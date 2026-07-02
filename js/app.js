@@ -5,8 +5,10 @@ import {
 } from "../firebase/auth.js";
 
 import {
-  loadTasks as loadCloudTasks,
-  saveTask as saveCloudTask
+  watchTasks,
+  saveTask as saveCloudTask,
+  deleteTask as deleteCloudTask,
+  updateTaskOrder
 } from "../firebase/firestore.js";
 
 const taskTitleInput = document.querySelector("#task-title");
@@ -16,26 +18,14 @@ const addTaskButton = document.querySelector("#add-task");
 const taskList = document.querySelector("#task-list");
 const emptyState = document.querySelector("#empty-state");
 const charCount = document.querySelector("#char-count");
-const toast = document.querySelector("#toast");
-const undoButton = document.querySelector("#undo-clear");
 const signInButton = document.querySelector("#sign-in");
 const signOutButton = document.querySelector("#sign-out");
 const authStatus = document.querySelector("#auth-status");
 
 let tasks = [];
 let currentUser = null;
-let lastClearedTask = null;
-let undoTimer = null;
+let unsubscribeTasks = null;
 let draggedTaskId = null;
-
-function saveTasks() {
-  localStorage.setItem("toDoTomorrowTasks", JSON.stringify(tasks));
-}
-
-function loadTasks() {
-  const savedTasks = localStorage.getItem("toDoTomorrowTasks");
-  tasks = savedTasks ? JSON.parse(savedTasks) : [];
-}
 
 function renderTasks() {
   taskList.innerHTML = "";
@@ -71,13 +61,10 @@ async function addTask() {
     return;
   }
 
- await saveCloudTask(currentUser.uid, {
-  title,
-  notes
-});
-
-tasks = await loadCloudTasks(currentUser.uid);
-renderTasks();
+  await saveCloudTask(currentUser.uid, {
+    title,
+    notes
+  });
 
   taskTitleInput.value = "";
   taskNotesInput.value = "";
@@ -85,47 +72,17 @@ renderTasks();
   taskTitleInput.focus();
 }
 
-function clearTask(id) {
-  const item = taskList.querySelector(`[data-id="${id}"]`);
-  const index = tasks.findIndex((task) => task.id === id);
+async function clearTask(id) {
+  if (!currentUser) return;
 
-  if (index === -1 || !item) return;
+  const item = taskList.querySelector(`[data-id="${id}"]`);
+  if (!item) return;
 
   item.classList.add("clearing");
 
-  setTimeout(() => {
-    lastClearedTask = {
-      task: tasks[index],
-      index
-    };
-
-    tasks.splice(index, 1);
-    saveTasks();
-    renderTasks();
-    showToast();
+  setTimeout(async () => {
+    await deleteCloudTask(currentUser.uid, id);
   }, 180);
-}
-
-function showToast() {
-  toast.classList.remove("hidden");
-
-  clearTimeout(undoTimer);
-  undoTimer = setTimeout(() => {
-    lastClearedTask = null;
-    toast.classList.add("hidden");
-  }, 10000);
-}
-
-function undoClear() {
-  if (!lastClearedTask) return;
-
-  tasks.splice(lastClearedTask.index, 0, lastClearedTask.task);
-  saveTasks();
-  renderTasks();
-
-  lastClearedTask = null;
-  toast.classList.add("hidden");
-  clearTimeout(undoTimer);
 }
 
 function updateCharacterCount() {
@@ -146,15 +103,21 @@ function toggleNotes() {
 
 function handleDragStart(event) {
   const item = event.target.closest(".task-card");
+  if (!item) return;
+
   draggedTaskId = item.dataset.id;
   item.classList.add("dragging");
 }
 
-function handleDragEnd(event) {
+async function handleDragEnd(event) {
   const item = event.target.closest(".task-card");
+  if (!item || !currentUser) return;
+
   item.classList.remove("dragging");
   draggedTaskId = null;
+
   saveTaskOrderFromDom();
+  await updateTaskOrder(currentUser.uid, tasks);
 }
 
 function handleDragOver(event) {
@@ -176,7 +139,7 @@ function getDragAfterElement(container, y) {
   const draggableElements = [
     ...container.querySelectorAll(".task-card:not(.dragging)")
   ];
- 
+
   return draggableElements.reduce(
     (closest, child) => {
       const box = child.getBoundingClientRect();
@@ -203,8 +166,9 @@ function saveTaskOrderFromDom() {
     (item) => item.dataset.id
   );
 
-  tasks = orderedIds.map((id) => tasks.find((task) => task.id === id));
-  saveTasks();
+  tasks = orderedIds
+    .map((id) => tasks.find((task) => task.id === id))
+    .filter(Boolean);
 }
 
 function escapeHtml(text) {
@@ -224,7 +188,6 @@ taskTitleInput.addEventListener("keydown", (event) => {
 });
 
 toggleNotesButton.addEventListener("click", toggleNotes);
-undoButton.addEventListener("click", undoClear);
 
 taskList.addEventListener("click", (event) => {
   const clearButton = event.target.closest(".clear-button");
@@ -237,10 +200,6 @@ taskList.addEventListener("click", (event) => {
 taskList.addEventListener("dragstart", handleDragStart);
 taskList.addEventListener("dragend", handleDragEnd);
 taskList.addEventListener("dragover", handleDragOver);
-
-loadTasks();
-renderTasks();
-taskTitleInput.focus();
 
 signInButton.addEventListener("click", async () => {
   try {
@@ -255,7 +214,12 @@ signOutButton.addEventListener("click", async () => {
   await signOutUser();
 });
 
-watchAuth(async (user) => {
+watchAuth((user) => {
+  if (unsubscribeTasks) {
+    unsubscribeTasks();
+    unsubscribeTasks = null;
+  }
+
   if (user) {
     currentUser = user;
 
@@ -263,8 +227,10 @@ watchAuth(async (user) => {
     signInButton.classList.add("hidden");
     signOutButton.classList.remove("hidden");
 
-    tasks = await loadCloudTasks(currentUser.uid);
-    renderTasks();
+    unsubscribeTasks = watchTasks(currentUser.uid, (cloudTasks) => {
+      tasks = cloudTasks;
+      renderTasks();
+    });
   } else {
     currentUser = null;
     tasks = [];
@@ -275,3 +241,6 @@ watchAuth(async (user) => {
     signOutButton.classList.add("hidden");
   }
 });
+
+renderTasks();
+taskTitleInput.focus();
