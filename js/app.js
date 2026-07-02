@@ -1,3 +1,9 @@
+import {
+  signInWithGoogle,
+  signOutUser,
+  watchAuth
+} from "../firebase/auth.js";
+
 const taskTitleInput = document.querySelector("#task-title");
 const taskNotesInput = document.querySelector("#task-notes");
 const toggleNotesButton = document.querySelector("#toggle-notes");
@@ -7,6 +13,9 @@ const emptyState = document.querySelector("#empty-state");
 const charCount = document.querySelector("#char-count");
 const toast = document.querySelector("#toast");
 const undoButton = document.querySelector("#undo-clear");
+const signInButton = document.querySelector("#sign-in");
+const signOutButton = document.querySelector("#sign-out");
+const authStatus = document.querySelector("#auth-status");
 
 let tasks = [];
 let lastClearedTask = null;
@@ -223,3 +232,36 @@ taskList.addEventListener("dragover", handleDragOver);
 loadTasks();
 renderTasks();
 taskTitleInput.focus();
+
+signInButton.addEventListener("click", async () => {
+  try {
+    await signInWithGoogle();
+  } catch (error) {
+    console.error(error);
+    alert("Google sign in failed.");
+  }
+});
+
+signOutButton.addEventListener("click", async () => {
+  await signOutUser();
+});
+
+watchAuth((user) => {
+
+  if (user) {
+
+    authStatus.textContent = `Hi ${user.displayName}`;
+
+    signInButton.classList.add("hidden");
+    signOutButton.classList.remove("hidden");
+
+  } else {
+
+    authStatus.textContent = "Not signed in";
+
+    signInButton.classList.remove("hidden");
+    signOutButton.classList.add("hidden");
+
+  }
+
+});
