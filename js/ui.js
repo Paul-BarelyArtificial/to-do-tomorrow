@@ -1,1 +1,0 @@
-// UI helper functions will go here later.
