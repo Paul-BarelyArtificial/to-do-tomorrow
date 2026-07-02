@@ -11,6 +11,8 @@ import {
   updateTaskOrder
 } from "../firebase/firestore.js";
 
+const APP_VERSION = "v0.3.2";
+
 const taskTitleInput = document.querySelector("#task-title");
 const taskNotesInput = document.querySelector("#task-notes");
 const toggleNotesButton = document.querySelector("#toggle-notes");
@@ -21,6 +23,7 @@ const charCount = document.querySelector("#char-count");
 const signInButton = document.querySelector("#sign-in");
 const signOutButton = document.querySelector("#sign-out");
 const authStatus = document.querySelector("#auth-status");
+const appVersion = document.querySelector("#app-version");
 
 let tasks = [];
 let currentUser = null;
@@ -241,6 +244,10 @@ watchAuth((user) => {
     signOutButton.classList.add("hidden");
   }
 });
+
+if (appVersion) {
+  appVersion.textContent = APP_VERSION;
+}
 
 renderTasks();
 taskTitleInput.focus();

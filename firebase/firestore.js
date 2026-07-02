@@ -19,9 +19,9 @@ function tasksCollection(userId) {
 
 export function watchTasks(userId, callback) {
   return onSnapshot(tasksCollection(userId), (snapshot) => {
-    const tasks = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data()
+    const tasks = snapshot.docs.map((document) => ({
+      id: document.id,
+      ...document.data()
     }));
 
     tasks.sort((a, b) => {

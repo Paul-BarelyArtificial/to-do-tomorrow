@@ -4,8 +4,8 @@
   --panel-soft: #1f2228;
   --text: #f4f1ea;
   --muted: #aaa39a;
-  --accent: #d7ff64;
-  --accent-soft: rgba(215, 255, 100, 0.12);
+  --accent: #00AEEF;
+  --accent-soft: rgba(0, 174, 239, 0.14);
   --border: rgba(244, 241, 234, 0.12);
   --danger: #ff7a7a;
   --shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
@@ -20,7 +20,7 @@ body {
   min-height: 100vh;
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background:
-    radial-gradient(circle at top, rgba(215, 255, 100, 0.08), transparent 32rem),
+    radial-gradient(circle at top, rgba(0, 174, 239, 0.10), transparent 32rem),
     var(--bg);
   color: var(--text);
 }
@@ -138,7 +138,7 @@ textarea:focus {
   border-radius: 999px;
   padding: 12px 22px;
   background: var(--accent);
-  color: #111;
+  color: #061018;
   font-weight: 800;
 }
 
@@ -173,6 +173,7 @@ textarea:focus {
   color: var(--muted);
   cursor: grab;
   user-select: none;
+  touch-action: none;
 }
 
 .task-content h2 {
@@ -220,6 +221,9 @@ textarea:focus {
 }
 
 .app-footer {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
   margin-top: 28px;
   color: var(--muted);
   font-size: 0.82rem;
@@ -244,7 +248,7 @@ textarea:focus {
 .toast button {
   border: 0;
   background: transparent;
-  color: #111;
+  color: #061018;
   font-weight: 800;
   text-decoration: underline;
 }
