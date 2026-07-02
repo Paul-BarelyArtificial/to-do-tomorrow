@@ -4,6 +4,11 @@ import {
   watchAuth
 } from "../firebase/auth.js";
 
+import {
+  loadTasks as loadCloudTasks,
+  saveTask as saveCloudTask
+} from "../firebase/firestore.js";
+
 const taskTitleInput = document.querySelector("#task-title");
 const taskNotesInput = document.querySelector("#task-notes");
 const toggleNotesButton = document.querySelector("#toggle-notes");
@@ -18,6 +23,7 @@ const signOutButton = document.querySelector("#sign-out");
 const authStatus = document.querySelector("#auth-status");
 
 let tasks = [];
+let currentUser = null;
 let lastClearedTask = null;
 let undoTimer = null;
 let draggedTaskId = null;
@@ -54,21 +60,21 @@ function renderTasks() {
   });
 }
 
-function addTask() {
+async function addTask() {
   const title = taskTitleInput.value.trim();
   const notes = taskNotesInput.value.trim();
 
   if (!title) return;
 
-  tasks.push({
-    id: crypto.randomUUID(),
-    title,
-    notes,
-    createdAt: Date.now()
-  });
+  if (!currentUser) {
+    alert("Please sign in before adding tasks.");
+    return;
+  }
 
-  saveTasks();
-  renderTasks();
+  await saveCloudTask(currentUser.uid, {
+    title,
+    notes
+  });
 
   taskTitleInput.value = "";
   taskNotesInput.value = "";
