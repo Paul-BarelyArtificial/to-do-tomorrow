@@ -1,14 +1,15 @@
 :root {
-  --bg: #101113;
-  --panel: #17191d;
-  --panel-soft: #1f2228;
-  --text: #f4f1ea;
-  --muted: #aaa39a;
-  --accent: #00AEEF;
-  --accent-soft: rgba(0, 174, 239, 0.14);
-  --border: rgba(244, 241, 234, 0.12);
+  --bg: #070b10;
+  --panel: #111821;
+  --panel-soft: #16202b;
+  --text: #f4f7fb;
+  --muted: #9aa8b6;
+  --accent: #2fb9ed;
+  --accent-strong: #1aa5dc;
+  --accent-soft: rgba(47, 185, 237, 0.16);
+  --border: rgba(244, 247, 251, 0.12);
   --danger: #ff7a7a;
-  --shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.32);
 }
 
 * {
@@ -20,7 +21,8 @@ body {
   min-height: 100vh;
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background:
-    radial-gradient(circle at top, rgba(0, 174, 239, 0.10), transparent 32rem),
+    radial-gradient(circle at top left, rgba(47, 185, 237, 0.18), transparent 28rem),
+    radial-gradient(circle at bottom right, rgba(47, 185, 237, 0.08), transparent 28rem),
     var(--bg);
   color: var(--text);
 }
@@ -36,27 +38,41 @@ button {
 }
 
 .app-shell {
-  width: min(92vw, 680px);
+  width: min(92vw, 720px);
   margin: 0 auto;
-  padding: 48px 0 80px;
+  padding: 44px 0 72px;
 }
 
 .app-header {
   margin-bottom: 32px;
 }
 
+.brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.brand-mark {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(47, 185, 237, 0.5), 0 10px 30px rgba(47, 185, 237, 0.14);
+}
+
 .brand {
-  margin: 0 0 18px;
+  margin: 0;
   color: var(--accent);
   font-size: 0.82rem;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
 h1 {
   margin: 0;
-  font-size: clamp(2.4rem, 8vw, 4.8rem);
+  font-size: clamp(2.5rem, 8vw, 4.9rem);
   line-height: 0.95;
   letter-spacing: -0.08em;
 }
@@ -70,7 +86,7 @@ h1 {
 .task-entry {
   padding: 22px;
   margin-bottom: 28px;
-  background: rgba(23, 25, 29, 0.84);
+  background: rgba(17, 24, 33, 0.86);
   border: 1px solid var(--border);
   border-radius: 28px;
   box-shadow: var(--shadow);
@@ -117,7 +133,7 @@ textarea:focus {
   border: 0;
   background: transparent;
   color: var(--accent);
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .entry-footer {
@@ -138,8 +154,13 @@ textarea:focus {
   border-radius: 999px;
   padding: 12px 22px;
   background: var(--accent);
-  color: #061018;
-  font-weight: 800;
+  color: #051018;
+  font-weight: 900;
+  box-shadow: 0 10px 24px rgba(47, 185, 237, 0.22);
+}
+
+#add-task:hover {
+  background: var(--accent-strong);
 }
 
 .task-list {
@@ -156,11 +177,15 @@ textarea:focus {
   gap: 14px;
   align-items: start;
   padding: 18px;
-  background: rgba(23, 25, 29, 0.92);
+  background: rgba(17, 24, 33, 0.94);
   border: 1px solid var(--border);
   border-radius: 24px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
   transition: transform 180ms ease, opacity 180ms ease, border-color 180ms ease;
+}
+
+.task-card:hover {
+  border-color: rgba(47, 185, 237, 0.34);
 }
 
 .task-card.clearing {
@@ -168,12 +193,16 @@ textarea:focus {
   opacity: 0;
 }
 
+.task-card.dragging {
+  opacity: 0.65;
+  border-color: var(--accent);
+}
+
 .drag-handle {
   padding-top: 2px;
   color: var(--muted);
   cursor: grab;
   user-select: none;
-  touch-action: none;
 }
 
 .task-content h2 {
@@ -200,6 +229,7 @@ textarea:focus {
 
 .clear-button:hover {
   background: var(--accent-soft);
+  border-color: var(--accent);
 }
 
 .empty-state {
@@ -223,34 +253,11 @@ textarea:focus {
 .app-footer {
   display: flex;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   margin-top: 28px;
   color: var(--muted);
   font-size: 0.82rem;
   text-align: center;
-}
-
-.toast {
-  position: fixed;
-  left: 50%;
-  bottom: 24px;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 14px;
-  align-items: center;
-  padding: 12px 16px;
-  background: #f4f1ea;
-  color: #111;
-  border-radius: 999px;
-  box-shadow: var(--shadow);
-}
-
-.toast button {
-  border: 0;
-  background: transparent;
-  color: #061018;
-  font-weight: 800;
-  text-decoration: underline;
 }
 
 .hidden {
@@ -273,22 +280,28 @@ textarea:focus {
 
 #sign-in,
 #sign-out {
-  border: 1px solid var(--border);
+  border: 1px solid rgba(47, 185, 237, 0.5);
   border-radius: 999px;
   padding: 10px 16px;
-  background: var(--panel-soft);
+  background: rgba(47, 185, 237, 0.08);
   color: var(--text);
-  font-weight: 700;
+  font-weight: 800;
 }
 
 #sign-in:hover,
 #sign-out:hover {
+  background: var(--accent-soft);
   border-color: var(--accent);
 }
 
 @media (max-width: 520px) {
   .app-shell {
     padding-top: 32px;
+  }
+
+  .brand-mark {
+    width: 38px;
+    height: 38px;
   }
 
   .task-entry {

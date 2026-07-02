@@ -6,21 +6,33 @@
 
   <title>Barely Artificial • To Do Tomorrow</title>
 
-  <link rel="stylesheet" href="css/styles.css" />
+  <meta name="theme-color" content="#2FB9ED" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="To Do Tomorrow" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/png" href="images/favicon-32.png" />
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+  <link rel="stylesheet" href="css/styles.css?v=0.3.3" />
 </head>
 <body>
   <main class="app-shell">
     <header class="app-header">
-  <p class="brand">Barely Artificial</p>
-  <h1>To Do Tomorrow</h1>
-  <p class="tagline">One thing at a time.</p>
+      <div class="brand-lockup">
+        <img src="images/ba-logo.png" alt="Barely Artificial logo" class="brand-mark" />
+        <p class="brand">Barely Artificial</p>
+      </div>
 
-  <div class="auth-panel">
-    <p id="auth-status">Not signed in</p>
-    <button id="sign-in" type="button">Sign in with Google</button>
-    <button id="sign-out" class="hidden" type="button">Sign out</button>
-  </div>
-</header>
+      <h1>To Do Tomorrow</h1>
+      <p class="tagline">One thing at a time.</p>
+
+      <div class="auth-panel">
+        <p id="auth-status">Not signed in</p>
+        <button id="sign-in" type="button">Sign in with Google</button>
+        <button id="sign-out" class="hidden" type="button">Sign out</button>
+      </div>
+    </header>
 
     <section class="task-entry" aria-label="Add a task">
       <label for="task-title">What needs doing tomorrow?</label>
@@ -61,15 +73,10 @@
     <footer class="app-footer">
       <span>Barely Artificial</span>
       <span aria-hidden="true">•</span>
-      <span id="app-version">v0.3.2</span>
+      <span id="app-version">v0.3.3</span>
     </footer>
   </main>
 
-  <div id="toast" class="toast hidden">
-    Task cleared <button id="undo-clear" type="button">Undo</button>
-  </div>
-
-<script type="module" src="js/app.js"></script>
-
+  <script type="module" src="js/app.js?v=0.3.3"></script>
 </body>
 </html>
