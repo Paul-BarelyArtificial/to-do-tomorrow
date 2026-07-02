@@ -253,21 +253,17 @@ signOutButton.addEventListener("click", async () => {
 });
 
 watchAuth((user) => {
-
   if (user) {
+    currentUser = user;
 
     authStatus.textContent = `Hi ${user.displayName}`;
-
     signInButton.classList.add("hidden");
     signOutButton.classList.remove("hidden");
-
   } else {
+    currentUser = null;
 
     authStatus.textContent = "Not signed in";
-
     signInButton.classList.remove("hidden");
     signOutButton.classList.add("hidden");
-
   }
-
 });
